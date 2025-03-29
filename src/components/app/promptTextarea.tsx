@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "../ui/textarea";
 import {
   Card,
   CardContent,
@@ -7,31 +7,32 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Button } from "./ui/button";
-import { post } from "../lib/axios";
+} from "../ui/card";
+import { Button } from "../ui/button";
+import { post } from "../../lib/axios";
+import { Loader2, Send } from "lucide-react";
 
-interface PromptBoxProps {
+interface PromptTextareaProps {
   defaultPrompt?: string;
-  isDisabled: boolean;
   onSuccessCallback: (data: any) => void;
 }
 
-const PromptBox: React.FC<PromptBoxProps> = ({
+const PromptTextarea: React.FC<PromptTextareaProps> = ({
   defaultPrompt,
-  isDisabled,
   onSuccessCallback,
 }) => {
   const [prompt, setPrompt] = useState(defaultPrompt || "");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmitCallback = (text: string) => {
+    setIsLoading(true);
     post("/trips", { prompt: text }).then((response) => {
       onSuccessCallback(response.data);
     });
   };
 
   return (
-    <>
+    <div className="w-full">
       <Card>
         <CardHeader>
           <CardTitle>Where to next?</CardTitle>
@@ -43,11 +44,10 @@ const PromptBox: React.FC<PromptBoxProps> = ({
         </CardHeader>
         <CardContent>
           <Textarea
-            disabled={isDisabled}
-            className="h-36"
+            className="h-60"
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(event) => {
-              if (!isDisabled && event.ctrlKey && event.key === "Enter") {
+              if (!isLoading && event.ctrlKey && event.key === "Enter") {
                 onSubmitCallback(prompt);
               }
             }}
@@ -56,16 +56,25 @@ const PromptBox: React.FC<PromptBoxProps> = ({
           />
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button
-            disabled={isDisabled || prompt.length === 0}
-            onClick={() => !isDisabled && onSubmitCallback(prompt)}
-          >
-            Ctrl + Enter
-          </Button>
+          {!isLoading && (
+            <Button
+              disabled={prompt.length === 0}
+              onClick={() => onSubmitCallback(prompt)}
+            >
+              <Send />
+              {prompt.length === 0 ? "Type something..." : "Ctrl + Enter"}
+            </Button>
+          )}
+          {isLoading && (
+            <Button disabled>
+              <Loader2 className="animate-spin" />
+              Please wait
+            </Button>
+          )}
         </CardFooter>
       </Card>
-    </>
+    </div>
   );
 };
 
-export default PromptBox;
+export default PromptTextarea;
