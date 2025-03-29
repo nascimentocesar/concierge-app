@@ -9,17 +9,26 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Button } from "./ui/button";
+import { post } from "../lib/axios";
 
 interface PromptBoxProps {
+  defaultPrompt?: string;
   isDisabled: boolean;
-  onSubmitCallback: (message: string) => void;
+  onSuccessCallback: (data: any) => void;
 }
 
 const PromptBox: React.FC<PromptBoxProps> = ({
+  defaultPrompt,
   isDisabled,
-  onSubmitCallback,
+  onSuccessCallback,
 }) => {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(defaultPrompt || "");
+
+  const onSubmitCallback = (text: string) => {
+    post("/trips", { prompt: text }).then((response) => {
+      onSuccessCallback(response.data);
+    });
+  };
 
   return (
     <>

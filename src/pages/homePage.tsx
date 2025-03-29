@@ -6,24 +6,30 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import { post } from "../lib/axios";
+import TripDetails from "../components/tripDetails";
 
 const HomePage: React.FC = () => {
-  const [hasSubmittedPrompt, setHasSubmittedPrompt] = React.useState(false);
+  const [isGeneratingSuggestions, setIsGeneratingSuggestions] =
+    React.useState(false);
+  const [prompt, setPrompt] = React.useState("");
   const [trip, setTrip] = React.useState();
-  const [currentStep, setCurrentStep] = React.useState(0);
+  const [currentStep, setCurrentStep] = React.useState("prompt");
 
-  const onSubmitCallback = (text: string) => {
-    setHasSubmittedPrompt(true);
-
-    post("/trips", { prompt: text }).then((response) => {
-      console.log("API response:", response);
-    });
+  const onTripCreatedCallback = (data: any) => {
+    setPrompt(data.prompt);
+    setTrip(data);
+    setIsGeneratingSuggestions(true);
+    setCurrentStep("recommendations");
   };
 
   return (
     <>
-      <Tabs defaultValue="prompt" className="w-[600px]">
+      <Tabs
+        value={currentStep}
+        onValueChange={(value) => setCurrentStep(value)}
+        defaultValue={currentStep}
+        className="w-full md:w-3/4 lg:w-1/2"
+      >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="prompt">Prompt</TabsTrigger>
           <TabsTrigger disabled={!trip} value="recommendations">
@@ -32,11 +38,19 @@ const HomePage: React.FC = () => {
         </TabsList>
         <TabsContent value="prompt">
           <PromptBox
-            isDisabled={hasSubmittedPrompt}
-            onSubmitCallback={(text) => onSubmitCallback(text)}
+            defaultPrompt={prompt}
+            isDisabled={isGeneratingSuggestions}
+            onSuccessCallback={(data) => onTripCreatedCallback(data)}
           />
         </TabsContent>
-        <TabsContent value="recommendations"></TabsContent>
+        <TabsContent value="recommendations">
+          {trip && (
+            <TripDetails
+              onSuccessCallback={() => setIsGeneratingSuggestions(false)}
+              tripId={(trip as any)._id}
+            />
+          )}
+        </TabsContent>
       </Tabs>
     </>
   );
