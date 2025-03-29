@@ -1,12 +1,10 @@
 import "./App.css";
+import HomePage from "./pages/homePage";
 
 export function App() {
   return (
-    <>
-      <h1>Parcel React App</h1>
-      <p>
-        Edit <code>src/App.tsx</code> to get started!
-      </p>
-    </>
+    <div className="p-20">
+      <HomePage />
+    </div>
   );
 }
