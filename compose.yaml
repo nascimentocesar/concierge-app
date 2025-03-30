@@ -1,6 +1,7 @@
 services:
   parcel:
     image: concierge-app
+    env_file: .env
     build:
       context: .
     ports:

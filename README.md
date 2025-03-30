@@ -3,6 +3,7 @@
 Application stack:
 
 - React.js
+- Tailwind CSS
 
 ## Setting up the environment
 

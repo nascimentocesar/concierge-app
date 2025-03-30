@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost";
+const baseUrl = process.env.API_BASE_URL;
 
 export const post = async (url: string, data: any) => {
   return axios.post(`${baseUrl}${url}`, data).catch((error) => {
