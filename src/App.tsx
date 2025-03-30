@@ -5,33 +5,28 @@ import TripRecommendations from "./components/app/tripRecommendations";
 import TripHistory from "./components/app/tripHistory";
 
 const App: React.FC = () => {
-  const [prompt, setPrompt] = React.useState("");
   const [trip, setTrip] = React.useState<any>();
-
-  const onTripCreatedCallback = (data: any) => {
-    setPrompt(data.prompt);
-    setTrip(data);
-  };
 
   return (
     <div className="grid gap-10 w-screen max-w-4xl p-10 pb-100">
       <div>
-        <TripHistory
-          onSelectCallback={(trip) => {
-            setTrip(trip);
-            setPrompt(trip.prompt);
-          }}
-        />
+        <TripHistory onSelectCallback={(trip) => setTrip(trip)} />
       </div>
       <>
         <PromptTextarea
-          key={prompt}
-          defaultPrompt={prompt}
-          onSuccessCallback={(data) => onTripCreatedCallback(data)}
+          key={`${trip?.id}-${trip?.isComplete}`}
+          trip={trip}
+          onSuccessCallback={(trip) => setTrip(trip)}
         />
-        {trip && (
-          <TripRecommendations trip={trip} onSuccessCallback={() => {}} />
-        )}
+        <>
+          {trip && (
+            <TripRecommendations
+              key={`${trip?.id}-${trip?.isComplete}`}
+              onSuccessCallback={(trip) => setTrip(trip)}
+              trip={trip}
+            />
+          )}
+        </>
       </>
     </div>
   );

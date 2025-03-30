@@ -13,16 +13,16 @@ import { post } from "../../lib/axios";
 import { Loader2, Send } from "lucide-react";
 
 interface PromptTextareaProps {
-  defaultPrompt?: string;
   onSuccessCallback: (data: any) => void;
+  trip?: any;
 }
 
 const PromptTextarea: React.FC<PromptTextareaProps> = ({
-  defaultPrompt,
   onSuccessCallback,
+  trip,
 }) => {
-  const [prompt, setPrompt] = useState(defaultPrompt || "");
-  const [isLoading, setIsLoading] = useState(false);
+  const [prompt, setPrompt] = useState((trip && trip.prompt) || "");
+  const [isLoading, setIsLoading] = useState(trip && !trip.isComplete);
 
   const onSubmitCallback = (text: string) => {
     setIsLoading(true);
