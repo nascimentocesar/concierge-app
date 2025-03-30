@@ -23,7 +23,7 @@ const TripRecommendations: React.FC<TripRecommendationsProps> = ({
           clearInterval(intervalId);
           setTrip(response.data);
           onSuccessCallback(response.data);
-        } else if (retriesCount < 10) {
+        } else if (retriesCount < 30) {
           setRetriesCount((prev) => prev + 1);
         }
       });
