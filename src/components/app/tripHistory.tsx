@@ -23,7 +23,7 @@ const TripHistory: React.FC<TripHistoryProps> = ({ onSelectCallback }) => {
 
   useEffect(() => {
     get("/trips", {}).then((response) => {
-      setTripList(response.data);
+      setTripList(response.data.reverse());
       setIsLoading(false);
     });
   }, []);

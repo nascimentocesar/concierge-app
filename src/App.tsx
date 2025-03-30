@@ -14,7 +14,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="grid gap-10 w-screen max-w-4xl p-10">
+    <div className="grid gap-10 w-screen max-w-4xl p-10 pb-100">
       <div>
         <TripHistory
           onSelectCallback={(trip) => {
